@@ -1,10 +1,10 @@
 import Fastify from 'fastify';
 
-import items from 'data/items.json' with { type: 'json' };
-import { Item } from 'src/types.ts';
-import { ItemsGetInQuerySchema, ItemUpdateInSchema } from 'src/validation.ts';
+import items from './items.json' with { type: 'json' };
+import { Item } from './types.ts';
+import { ItemsGetInQuerySchema, ItemUpdateInSchema } from './validation.ts';
 import { treeifyError, ZodError } from 'zod';
-import { doesItemNeedRevision } from './src/utils.ts';
+import { doesItemNeedRevision } from './utils.ts';
 
 const ITEMS = items as Item[];
 
@@ -105,6 +105,7 @@ fastify.get<ItemsGetRequest>('/items', request => {
       })
       .slice(skip, skip + limit)
       .map(item => ({
+        id: item.id,
         category: item.category,
         title: item.title,
         price: item.price,
@@ -163,7 +164,8 @@ fastify.put<ItemUpdateRequest>('/items/:id', (request, reply) => {
   }
 });
 
-const port = Number(process.env.port) ?? 8080;
+const parsedPort = Number(process.env.PORT);
+const port = Number.isFinite(parsedPort) ? parsedPort : 8080;
 
 fastify.listen({ port }, function (err, _address) {
   if (err) {
