@@ -1,0 +1,56 @@
+.button {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.editSize {
+  width: 170px;
+  height: 38px;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconWrap img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.button:hover {
+  filter: brightness(0.96);
+}
+
+.primary {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.secondary {
+  background: var(--color-surface-muted);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+}
+
+.fullWidth {
+  width: 100%;
+}

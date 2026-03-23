@@ -1,0 +1,135 @@
+.cardGrid,
+.cardList {
+	display: grid;
+	border: 1px solid var(--color-border);
+	border-radius: 16px;
+	background: var(--color-surface);
+	text-decoration: none;
+	color: inherit;
+	overflow: hidden;
+}
+
+.cardGrid {
+	width: 200px;
+	min-height: 268px;
+	grid-template-rows: 150px 1fr;
+}
+
+.cardList {
+	width: 100%;
+	min-height: 132px;
+	grid-template-columns: 179px 1fr;
+}
+
+.photoGrid,
+.photoList {
+	background: var(--color-page-bg);
+	display: grid;
+	place-items: center;
+}
+
+.photoGrid {
+	width: 200px;
+	height: 150px;
+}
+
+.photoList {
+	width: 179px;
+	height: 132px;
+}
+
+.photoImage {
+	width: 120px;
+	height: 90px;
+	object-fit: contain;
+	opacity: 0.85;
+}
+
+.cardBodyGrid,
+.cardBodyList {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.cardBodyGrid {
+	position: relative;
+	padding: 16px 10px 10px;
+}
+
+.cardBodyList {
+	padding: 12px 20px;
+}
+
+.cardMain {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.categoryTagGrid,
+.categoryTagList {
+	display: inline-flex;
+	align-items: center;
+	width: fit-content;
+	height: 22px;
+	padding: 0 12px;
+	border-radius: 6px;
+	font-size: 14px;
+	color: var(--color-text-secondary);
+}
+
+.categoryTagGrid {
+	position: absolute;
+	top: 0;
+	left: 10px;
+	transform: translateY(-50%);
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+}
+
+.categoryTagList {
+	padding: 0;
+	height: auto;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+}
+
+.cardTitle {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 24px;
+	color: var(--color-text-main);
+}
+
+.price {
+	margin: 0;
+	font-family: var(--font-main);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 140%;
+	color: var(--color-price);
+}
+
+.revisionBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	width: fit-content;
+	min-height: 26px;
+	border-radius: 8px;
+	background: var(--color-revision-bg);
+	color: var(--color-revision-text);
+	padding: 2px 8px;
+	font-size: 14px;
+}
+
+.revisionDot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--color-revision-text);
+}
