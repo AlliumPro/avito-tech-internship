@@ -11,6 +11,7 @@ type BaseProps = PropsWithChildren<{
   fullWidth?: boolean;
   className?: string;
   to?: string;
+  startIcon?: ReactNode;
   endIcon?: ReactNode;
 }>;
 
@@ -45,6 +46,7 @@ export function Button({
   fullWidth = false,
   className,
   to,
+  startIcon,
   endIcon,
   children,
   type = 'button',
@@ -54,6 +56,7 @@ export function Button({
 
   const content = (
     <>
+      {startIcon && <span className={styles.iconWrap}>{startIcon}</span>}
       <span>{children}</span>
       {endIcon && <span className={styles.iconWrap}>{endIcon}</span>}
     </>

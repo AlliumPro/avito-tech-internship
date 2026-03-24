@@ -1,0 +1,295 @@
+.page {
+	min-height: 100vh;
+	background: var(--color-page-bg);
+	padding: 20px 32px 40px;
+}
+
+.canvas {
+	max-width: 1399px;
+	margin: 0 auto;
+	display: grid;
+	gap: 16px;
+}
+
+.state {
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	gap: 12px;
+	text-align: center;
+	color: var(--color-text-secondary);
+}
+
+.errorText {
+	margin: 0;
+}
+
+.backLink {
+	color: var(--color-accent);
+	text-decoration: none;
+}
+
+.header {
+	display: grid;
+}
+
+.title {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-size: 30px;
+	font-weight: 500;
+	line-height: 40px;
+	letter-spacing: 0;
+}
+
+.errorBanner {
+	margin: 0;
+	border-radius: 8px;
+	padding: 10px 12px;
+	font-size: 14px;
+	max-width: 640px;
+}
+
+.errorBanner {
+	background: #fff2f0;
+	color: #a72d2d;
+}
+
+.form {
+	display: grid;
+	gap: 12px;
+}
+
+.formSection {
+	display: grid;
+	gap: 12px;
+	max-width: 942px;
+}
+
+.divider {
+	height: 1px;
+	background: var(--color-border);
+}
+
+.sectionTitle {
+	margin: 0;
+	padding-bottom: 8px;
+	font-family: var(--font-main);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+}
+
+.labelSection {
+	font-family: var(--font-main);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+	letter-spacing: 0;
+}
+
+.field {
+	display: grid;
+	gap: 8px;
+}
+
+.fieldFixed,
+.fieldWide {
+	display: grid;
+	gap: 8px;
+}
+
+.fieldFixed {
+	width: 456px;
+	max-width: 100%;
+}
+
+.fieldWide {
+	width: 942px;
+	max-width: 100%;
+}
+
+.label {
+	font-size: 14px;
+	font-weight: 500;
+	color: #3a3a3a;
+}
+
+.requiredMark {
+	color: #ff4d4f;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.input,
+.textarea {
+	width: 100%;
+	border-radius: 8px;
+	border: 1px solid #d9d9d9;
+	background: var(--color-surface);
+	font-family: var(--font-main);
+	font-size: 16px;
+	color: var(--color-text-main);
+}
+
+.input {
+	height: 32px;
+	padding: 0 12px;
+}
+
+.textarea {
+	min-height: 180px;
+	resize: vertical;
+	padding: 10px 12px;
+	line-height: 1.45;
+}
+
+.input:focus,
+.textarea:focus {
+	outline: 1px solid #40a9ff;
+}
+
+.inputError {
+	width: 100%;
+	height: 32px;
+	padding: 0 12px;
+	border-radius: 8px;
+	border: 1px solid #cf1322;
+	background: var(--color-surface);
+	font-family: var(--font-main);
+	font-size: 16px;
+	color: var(--color-text-main);
+}
+
+.inputError:focus {
+	outline: 1px solid var(--color-accent);
+	border-color: #cf1322;
+}
+
+.fieldError {
+	color: #cf1322;
+	font-size: 13px;
+}
+
+.paramsGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.paramsList {
+	display: grid;
+	gap: 12px;
+}
+
+.fieldFixedParam {
+	width: 456px;
+	max-width: 100%;
+	display: grid;
+	gap: 4px;
+}
+
+.labelParam {
+	font-size: 14px;
+	font-weight: 500;
+	color: #3a3a3a;
+	padding-bottom: 8px;
+}
+
+.counter {
+	justify-self: end;
+	font-size: 12px;
+	color: var(--color-text-muted);
+}
+
+.rowWithAction {
+	display: flex;
+	align-items: flex-end;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.aiError {
+	margin: 0;
+	color: #cf1322;
+	font-size: 14px;
+}
+
+.inlineSuggestion {
+	max-width: 520px;
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+	border-radius: 8px;
+	padding: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.aiInlineButton {
+	height: 24px;
+	width: auto;
+	justify-self: start;
+	align-self: start;
+	padding: 0 12px;
+	font-size: 14px;
+	background: #f9f1e6;
+	border: 1px solid #ffe7ba;
+	color: #fa8c16;
+}
+
+.aiPriceButton {
+	margin-top: 36px;
+}
+
+.applyButton {
+	height: 26px;
+	padding: 0 10px;
+}
+
+.suggestionTitle {
+	margin: 0;
+	font-weight: 500;
+}
+
+.suggestionText {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.45;
+	white-space: pre-line;
+}
+
+.actions {
+	display: flex;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+	.page {
+		padding: 12px 16px 24px;
+	}
+
+	.actions {
+		flex-wrap: wrap;
+	}
+
+	.fieldFixed,
+	.fieldWide {
+		max-width: 100%;
+	}
+
+	.fieldFixedParam {
+		max-width: 100%;
+	}
+
+	.rowWithAction {
+		align-items: stretch;
+	}
+
+	.inlineSuggestion {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
