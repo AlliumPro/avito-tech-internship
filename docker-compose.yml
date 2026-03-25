@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "${OLLAMA_PORT:-11435}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=*
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["ollama"]
+    command: ["pull", "${OLLAMA_MODEL:-gemma3:1b}"]
+    restart: "no"
+
+  frontend:
+    build:
+      context: ./avito-project
+      dockerfile: Dockerfile
+      args:
+        VITE_OLLAMA_BASE_URL: ${VITE_OLLAMA_BASE_URL:-http://localhost:${OLLAMA_PORT:-11435}}
+        VITE_OLLAMA_MODEL: ${VITE_OLLAMA_MODEL:-gemma3:1b}
+        VITE_OLLAMA_TIMEOUT_MS: ${VITE_OLLAMA_TIMEOUT_MS:-30000}
+    depends_on:
+      backend:
+        condition: service_started
+      ollama-init:
+        condition: service_completed_successfully
+    ports:
+      - "5173:80"
+
+volumes:
+  ollama_data:

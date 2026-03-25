@@ -20,8 +20,17 @@ fastify.use((_, __, next) =>
 );
 
 // Настройка CORS
-fastify.use((_, reply, next) => {
+fastify.use((request, reply, next) => {
   reply.setHeader('Access-Control-Allow-Origin', '*');
+  reply.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS');
+  reply.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (request.method === 'OPTIONS') {
+    reply.statusCode = 204;
+    reply.end();
+    return;
+  }
+
   next();
 });
 
@@ -166,8 +175,9 @@ fastify.put<ItemUpdateRequest>('/items/:id', (request, reply) => {
 
 const parsedPort = Number(process.env.PORT);
 const port = Number.isFinite(parsedPort) ? parsedPort : 8080;
+const host = process.env.HOST ?? '0.0.0.0';
 
-fastify.listen({ port }, function (err, _address) {
+fastify.listen({ host, port }, function (err, _address) {
   if (err) {
     fastify.log.error(err);
     process.exit(1);

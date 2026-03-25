@@ -4,11 +4,68 @@
 	padding: 20px 32px 40px;
 }
 
+.toastSuccess,
+.toastError {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 20;
+	width: min(420px, calc(100vw - 32px));
+	border-radius: 10px;
+	padding: 14px;
+	display: grid;
+	gap: 8px;
+	box-shadow: 0 8px 24px rgb(0 0 0 / 16%);
+}
+
+.toastSuccess {
+	background: #f6ffed;
+	border: 1px solid #b7eb8f;
+}
+
+.toastError {
+	background: #fff1f0;
+	border: 1px solid #ffa39e;
+}
+
+.toastTitle {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.toastMessage {
+	margin: 0;
+	font-size: 16px;
+	line-height: 1.4;
+	color: #4a4a4a;
+}
+
+.toastClose {
+	justify-self: start;
+	height: 28px;
+	padding: 0 10px;
+	border-radius: 8px;
+	border: 1px solid var(--color-border);
+	background: #fff;
+	cursor: pointer;
+	font-size: 14px;
+}
+
 .canvas {
 	max-width: 1399px;
 	margin: 0 auto;
 	display: grid;
 	gap: 16px;
+}
+
+.backToListButton {
+	width: fit-content;
+	height: 28px;
+	padding: 0 10px;
+	font-size: 14px;
+	line-height: 1;
 }
 
 .state {
@@ -209,22 +266,42 @@
 	flex-wrap: wrap;
 }
 
-.aiError {
-	margin: 0;
-	color: #cf1322;
-	font-size: 14px;
-}
-
-.inlineSuggestion {
-	max-width: 520px;
-	border: 1px solid var(--color-border);
-	background: var(--color-surface);
+.aiResultCard,
+.aiErrorCard {
+	max-width: 700px;
 	border-radius: 8px;
 	padding: 12px;
+	display: grid;
+	gap: 8px;
+}
+
+.aiResultCard {
+	border: 1px solid #d9f7be;
+	background: #f6ffed;
+}
+
+.aiErrorCard {
+	border: 1px solid #ffccc7;
+	background: #fff1f0;
+}
+
+.aiCardTitle,
+.aiErrorTitle {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.aiCardText,
+.aiErrorText {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.45;
+}
+
+.aiCardActions {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
+	gap: 8px;
 }
 
 .aiInlineButton {
@@ -246,6 +323,13 @@
 .applyButton {
 	height: 26px;
 	padding: 0 10px;
+	font-size: 14px;
+}
+
+.closeAiCardButton {
+	height: 26px;
+	padding: 0 10px;
+	font-size: 14px;
 }
 
 .suggestionTitle {
@@ -288,8 +372,7 @@
 		align-items: stretch;
 	}
 
-	.inlineSuggestion {
-		flex-direction: column;
-		align-items: flex-start;
+	.toastTitle {
+		font-size: 24px;
 	}
 }

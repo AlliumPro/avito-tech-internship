@@ -11,6 +11,14 @@
 	gap: 32px;
 }
 
+.backToListButton {
+	width: fit-content;
+	height: 28px;
+	padding: 0 10px;
+	font-size: 14px;
+	line-height: 1;
+}
+
 .state {
 	min-height: 100vh;
 	display: grid;
@@ -206,6 +214,7 @@
 
 .charName {
 	margin: 0;
+	width: 148px;
 	color: var(--color-text-secondary);
 }
 

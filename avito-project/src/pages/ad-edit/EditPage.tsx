@@ -227,10 +227,19 @@ export function EditPage() {
   const [form, setForm] = useState<EditFormState | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [pageError, setPageError] = useState<string | null>(null);
-  const [aiError, setAiError] = useState<string | null>(null);
   const [aiLoadingTarget, setAiLoadingTarget] = useState<'description' | 'price' | null>(null);
   const [suggestedDescription, setSuggestedDescription] = useState<string | null>(null);
   const [suggestedPrice, setSuggestedPrice] = useState<number | null>(null);
+  const [descriptionAiError, setDescriptionAiError] = useState<string | null>(null);
+  const [priceAiError, setPriceAiError] = useState<string | null>(null);
+  const [saveNotice, setSaveNotice] = useState<
+    | {
+        type: 'success' | 'error';
+        title: string;
+        message: string;
+      }
+    | null
+  >(null);
 
   const aiAssistant = useMemo(() => createAiAssistant(), []);
   const paramFields = form ? PARAM_FIELDS[form.category] : [];
@@ -284,9 +293,11 @@ export function EditPage() {
         }
 
         setErrors({});
-        setAiError(null);
+        setDescriptionAiError(null);
+        setPriceAiError(null);
         setSuggestedDescription(null);
         setSuggestedPrice(null);
+        setSaveNotice(null);
         setStatus('ready');
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
@@ -371,6 +382,7 @@ export function EditPage() {
 
     setStatus('saving');
     setPageError(null);
+    setSaveNotice(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/items/${id}`, {
@@ -386,10 +398,23 @@ export function EditPage() {
       }
 
       localStorage.removeItem(getDraftKey(id));
-      navigate(getViewPath(id));
+      setStatus('ready');
+      setSaveNotice({
+        type: 'success',
+        title: 'Изменения сохранены',
+        message: 'Данные успешно обновлены. Выполняется переход к объявлению.',
+      });
+
+      window.setTimeout(() => {
+        navigate(getViewPath(id));
+      }, 1100);
     } catch {
       setStatus('ready');
-      setPageError('Не удалось сохранить изменения. Повторите попытку.');
+      setSaveNotice({
+        type: 'error',
+        title: 'Ошибка сохранения',
+        message: 'При попытке сохранить изменения произошла ошибка. Попробуйте еще раз.',
+      });
     }
   };
 
@@ -399,12 +424,15 @@ export function EditPage() {
     }
 
     try {
-      setAiError(null);
+      setDescriptionAiError(null);
+      setSuggestedDescription(null);
       setAiLoadingTarget('description');
       const suggestion = await aiAssistant.generateDescription(buildUpdatePayload(form));
       setSuggestedDescription(suggestion);
     } catch (error) {
-      setAiError(error instanceof Error ? error.message : 'Не удалось получить предложение для описания.');
+      setDescriptionAiError(
+        error instanceof Error ? error.message : 'Не удалось получить предложение для описания.',
+      );
     } finally {
       setAiLoadingTarget(null);
     }
@@ -416,12 +444,13 @@ export function EditPage() {
     }
 
     try {
-      setAiError(null);
+      setPriceAiError(null);
+      setSuggestedPrice(null);
       setAiLoadingTarget('price');
       const suggestion = await aiAssistant.estimatePrice(buildUpdatePayload(form));
       setSuggestedPrice(suggestion);
     } catch (error) {
-      setAiError(error instanceof Error ? error.message : 'Не удалось получить оценку цены.');
+      setPriceAiError(error instanceof Error ? error.message : 'Не удалось получить оценку цены.');
     } finally {
       setAiLoadingTarget(null);
     }
@@ -444,7 +473,31 @@ export function EditPage() {
 
   return (
     <main className={styles.page}>
+      {saveNotice && (
+        <section
+          className={saveNotice.type === 'success' ? styles.toastSuccess : styles.toastError}
+          role="status"
+          aria-live="polite"
+        >
+          <p className={styles.toastTitle}>{saveNotice.title}</p>
+          <p className={styles.toastMessage}>{saveNotice.message}</p>
+          <button
+            type="button"
+            className={styles.toastClose}
+            onClick={() => {
+              setSaveNotice(null);
+            }}
+          >
+            Закрыть
+          </button>
+        </section>
+      )}
+
       <div className={styles.canvas}>
+        <Button to={getViewPath(id)} variant="secondary" className={styles.backToListButton}>
+          К объявлению
+        </Button>
+
         <header className={styles.header}>
           <h1 className={styles.title}>Редактирование объявления</h1>
         </header>
@@ -521,24 +574,58 @@ export function EditPage() {
               disabled={aiLoadingTarget !== null}
               startIcon={<img src={lightbulbIcon} alt="" aria-hidden />}
             >
-              {aiLoadingTarget === 'price' ? 'Расчет...' : 'Узнать рыночную цену'}
+              {aiLoadingTarget === 'price'
+                ? 'Выполняется запрос'
+                : suggestedPrice !== null || Boolean(priceAiError)
+                  ? 'Повторить запрос'
+                  : 'Узнать рыночную цену'}
             </Button>
           </div>
 
           {suggestedPrice !== null && (
-            <div className={styles.inlineSuggestion}>
-              <span>{suggestedPrice.toLocaleString('ru-RU')} ₽</span>
+            <section className={styles.aiResultCard}>
+              <p className={styles.aiCardTitle}>Ответ AI:</p>
+              <p className={styles.aiCardText}>{suggestedPrice.toLocaleString('ru-RU')} ₽</p>
+              <div className={styles.aiCardActions}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className={styles.applyButton}
+                  onClick={() => {
+                    updateForm({ price: String(suggestedPrice) });
+                  }}
+                >
+                  Применить
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className={styles.closeAiCardButton}
+                  onClick={() => {
+                    setSuggestedPrice(null);
+                  }}
+                >
+                  Закрыть
+                </Button>
+              </div>
+            </section>
+          )}
+
+          {priceAiError && (
+            <section className={styles.aiErrorCard}>
+              <p className={styles.aiErrorTitle}>Произошла ошибка при запросе к AI</p>
+              <p className={styles.aiErrorText}>{priceAiError}</p>
               <Button
                 type="button"
                 variant="secondary"
-                className={styles.applyButton}
+                className={styles.closeAiCardButton}
                 onClick={() => {
-                  updateForm({ price: String(suggestedPrice) });
+                  setPriceAiError(null);
                 }}
               >
-                Применить
+                Закрыть
               </Button>
-            </div>
+            </section>
           )}
 
           <div className={styles.divider} aria-hidden />
@@ -606,27 +693,61 @@ export function EditPage() {
               disabled={aiLoadingTarget !== null}
               startIcon={<img src={lightbulbIcon} alt="" aria-hidden />}
             >
-              {aiLoadingTarget === 'description' ? 'Генерация...' : 'Улучшить описание'}
+              {aiLoadingTarget === 'description'
+                ? 'Выполняется запрос'
+                : suggestedDescription || descriptionAiError
+                  ? 'Повторить запрос'
+                  : form.description.trim()
+                    ? 'Улучшить описание'
+                    : 'Придумать описание'}
             </Button>
 
             {suggestedDescription && (
-              <div className={styles.inlineSuggestion}>
-                <span className={styles.suggestionText}>{suggestedDescription}</span>
+              <section className={styles.aiResultCard}>
+                <p className={styles.aiCardTitle}>Ответ AI:</p>
+                <p className={styles.suggestionText}>{suggestedDescription}</p>
+                <div className={styles.aiCardActions}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className={styles.applyButton}
+                    onClick={() => {
+                      updateForm({ description: suggestedDescription });
+                    }}
+                  >
+                    Применить
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className={styles.closeAiCardButton}
+                    onClick={() => {
+                      setSuggestedDescription(null);
+                    }}
+                  >
+                    Закрыть
+                  </Button>
+                </div>
+              </section>
+            )}
+
+            {descriptionAiError && (
+              <section className={styles.aiErrorCard}>
+                <p className={styles.aiErrorTitle}>Произошла ошибка при запросе к AI</p>
+                <p className={styles.aiErrorText}>{descriptionAiError}</p>
                 <Button
                   type="button"
                   variant="secondary"
-                  className={styles.applyButton}
+                  className={styles.closeAiCardButton}
                   onClick={() => {
-                    updateForm({ description: suggestedDescription });
+                    setDescriptionAiError(null);
                   }}
                 >
-                  Применить
+                  Закрыть
                 </Button>
-              </div>
+              </section>
             )}
           </section>
-
-          {aiError && <p className={styles.aiError}>{aiError}</p>}
 
           <footer className={styles.actions}>
             <Button type="submit" disabled={status === 'saving'}>

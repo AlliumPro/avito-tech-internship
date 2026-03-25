@@ -47,6 +47,25 @@ const PARAM_LABELS: Record<Category, Record<string, string>> = {
   },
 };
 
+const PARAM_VALUE_LABELS: Record<string, Record<string, string>> = {
+  transmission: {
+    automatic: 'Автоматическая',
+    manual: 'Механическая',
+  },
+  type: {
+    phone: 'Телефон',
+    laptop: 'Ноутбук',
+    misc: 'Другое',
+    flat: 'Квартира',
+    house: 'Дом',
+    room: 'Комната',
+  },
+  condition: {
+    new: 'Новый',
+    used: 'Б/у',
+  },
+};
+
 const formatPrice = (price: number | null): string => {
   if (price === null) {
     return 'Цена не указана';
@@ -63,8 +82,12 @@ const formatDateTime = (value: string): string =>
     minute: '2-digit',
   });
 
-const formatParamValue = (value: unknown): string => {
+const formatParamValue = (value: unknown, key?: string): string => {
   if (typeof value === 'string') {
+    if (key) {
+      return PARAM_VALUE_LABELS[key]?.[value] ?? value;
+    }
+
     return value;
   }
 
@@ -96,7 +119,7 @@ const getMissingFieldLabels = (item: DetailItem): string[] => {
 
   for (const key of requiredByCategory[item.category]) {
     const rawValue = item.params[key];
-    const formatted = formatParamValue(rawValue).trim();
+    const formatted = formatParamValue(rawValue, key).trim();
 
     if (!formatted) {
       missing.push(labelMap[key] ?? key);
@@ -188,7 +211,7 @@ export function ViewPage() {
       .map(([key, rawValue]) => ({
         key,
         label: labels[key] ?? key,
-        value: formatParamValue(rawValue),
+        value: formatParamValue(rawValue, key),
       }))
       .filter((entry) => Boolean(entry.value.trim()));
   }, [item]);
@@ -219,6 +242,10 @@ export function ViewPage() {
   return (
     <main className={styles.page}>
       <div className={styles.canvas}>
+        <Button to={AppRoute.List} variant="secondary" className={styles.backToListButton}>
+          К объявлениям
+        </Button>
+
         <section className={styles.topBlock}>
           <div className={styles.titlePriceRow}>
             <h1 className={styles.title}>{item.title}</h1>

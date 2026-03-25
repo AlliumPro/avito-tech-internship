@@ -28,6 +28,46 @@ npm start
 
 Сервер запускается на порту 8080.
 
+## Запуск через Docker Compose
+
+Запуск из корня репозитория (папка выше `avito-project`):
+
+```bash
+docker compose up --build
+```
+
+После запуска:
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8080`
+- Ollama API: `http://localhost:11435`
+
+Если порт `11435` занят, можно выбрать любой свободный:
+
+```bash
+OLLAMA_PORT=11500 docker compose up --build
+```
+
+По умолчанию подтягивается модель `gemma3:1b` (один раз, потом используется из volume).
+
+Если хотите другую модель:
+
+```bash
+OLLAMA_MODEL=llama3 docker compose up --build
+```
+
+Остановка:
+
+```bash
+docker compose down
+```
+
+Полная очистка (включая скачанные модели Ollama):
+
+```bash
+docker compose down -v
+```
+
 ## Проблема с установкой зависимостей и ее решение
 
 При запуске npm install в backend-папке возникала ошибка установки:
