@@ -8,20 +8,51 @@ import { doesItemNeedRevision } from './utils.ts';
 
 const ITEMS = items as Item[];
 
+const getPortFromArgs = (): number | undefined => {
+  for (const arg of process.argv.slice(2)) {
+    if (arg.startsWith('--port=')) {
+      const parsed = Number(arg.slice('--port='.length));
+      if (Number.isFinite(parsed)) {
+        return parsed;
+      }
+    }
+  }
+
+  const portIndex = process.argv.findIndex(arg => arg === '--port');
+  if (portIndex !== -1) {
+    const nextArg = process.argv[portIndex + 1];
+    const parsed = Number(nextArg);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+};
+
 const fastify = Fastify({
   logger: true,
 });
 
 await fastify.register((await import('@fastify/middie')).default);
 
-// Искуственная задержка ответов, чтобы можно было протестировать состояния загрузки
-fastify.use((_, __, next) =>
-  new Promise(res => setTimeout(res, 300 + Math.random() * 700)).then(next),
+const allowedOrigins = new Set(
+  (process.env.CORS_ORIGINS ||
+    'http://localhost:5173,http://127.0.0.1:5173')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean),
 );
 
-// Настройка CORS
+// CORS with configurable allowlist for local and docker usage.
 fastify.use((request, reply, next) => {
-  reply.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = request.headers.origin;
+
+  if (origin && allowedOrigins.has(origin)) {
+    reply.setHeader('Access-Control-Allow-Origin', origin);
+    reply.setHeader('Vary', 'Origin');
+  }
+
   reply.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS');
   reply.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -173,8 +204,9 @@ fastify.put<ItemUpdateRequest>('/items/:id', (request, reply) => {
   }
 });
 
-const parsedPort = Number(process.env.PORT);
-const port = Number.isFinite(parsedPort) ? parsedPort : 8080;
+const cliPort = getPortFromArgs();
+const envPort = Number(process.env.PORT);
+const port = cliPort ?? (Number.isFinite(envPort) ? envPort : 8080);
 const host = process.env.HOST ?? '0.0.0.0';
 
 fastify.listen({ host, port }, function (err, _address) {

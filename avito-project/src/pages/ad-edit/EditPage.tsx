@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { createAiAssistant } from '@/pages/ad-edit/aiAssistant';
 import lightbulbIcon from '@/assets/lightbulb.svg';
+import { API_BASE_URL } from '@/shared/config/api';
 import { AppRoute, getViewPath } from '@/shared/config/routes';
 import { Button } from '@/shared/ui/button/Button';
 import styles from './EditPage.module.css';
@@ -50,8 +51,6 @@ type UpdatePayload = {
   price: number;
   params: Record<string, string | number>;
 };
-
-const API_BASE_URL = 'http://127.0.0.1:8080';
 const MAX_DESCRIPTION_LENGTH = 3000;
 
 const CATEGORY_OPTIONS: SelectOption[] = [

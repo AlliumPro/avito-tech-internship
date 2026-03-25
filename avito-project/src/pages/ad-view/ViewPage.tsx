@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import editIcon from '@/assets/Edit.svg';
 import exclamationCircle from '@/assets/exclamation-circle.svg';
 import placeholderImage from '@/assets/placeholder-image.png';
+import { API_BASE_URL } from '@/shared/config/api';
 import { AppRoute, getEditPath } from '@/shared/config/routes';
 import { Button } from '@/shared/ui/button/Button';
 import styles from './ViewPage.module.css';
@@ -20,8 +21,6 @@ type DetailItem = {
   params: Record<string, unknown>;
   needsRevision: boolean;
 };
-
-const API_BASE_URL = 'http://127.0.0.1:8080';
 
 const PARAM_LABELS: Record<Category, Record<string, string>> = {
   auto: {

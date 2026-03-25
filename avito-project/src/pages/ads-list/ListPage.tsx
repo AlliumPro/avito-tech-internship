@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ListCard } from "./ListCard.tsx";
+import { API_BASE_URL } from "@/shared/config/api";
 import type { AdListItem, Category, Layout } from "./types";
 import styles from "./ListPage.module.css";
 
@@ -9,8 +10,6 @@ type ItemsResponse = {
   items: AdListItem[];
   total: number;
 };
-
-const API_BASE_URL = "http://127.0.0.1:8080";
 
 const SORT_PARAMS: Record<
   SortValue,
@@ -36,7 +35,7 @@ export function ListPage() {
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  const pageSize = layout === "grid" ? 15 : 4;
+  const pageSize = 10;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(page, totalPages);
 
